@@ -43,7 +43,7 @@ docker compose up -d --build
 docker compose logs -f weaning
 ```
 
-The app listens on `127.0.0.1:3000` on the server. **To install it on an iPhone it must be served over HTTPS**
+The app listens on `127.0.0.1:3080` on the server (change `APP_PORT` in `.env` if that port is taken). **To install it on an iPhone it must be served over HTTPS**
 (Android also needs HTTPS for install and notifications). Pick one:
 
 **Option A: your own domain + Caddy (automatic free HTTPS)**
@@ -52,11 +52,11 @@ The app listens on `127.0.0.1:3000` on the server. **To install it on an iPhone 
 3. Set `DOMAIN=spoons.yourdomain.com` in `.env`, then `docker compose --profile caddy up -d`.
 
 **Option B: Cloudflare Tunnel (no open ports, works from home broadband)**
-1. In Cloudflare Zero Trust, Networks, Tunnels, create a tunnel, add a public hostname pointing to `http://localhost:3000`.
+1. In Cloudflare Zero Trust, Networks, Tunnels, create a tunnel, add a public hostname pointing to `http://localhost:3080` (your `APP_PORT`).
 2. Put the token in `TUNNEL_TOKEN` in `.env`, then `docker compose --profile tunnel up -d`.
 
 **Option C: already have a reverse proxy** (Nginx Proxy Manager, Traefik, Synology, Unraid...): proxy your HTTPS hostname
-to port 3000 and pass `X-Forwarded-Proto`. Remove `127.0.0.1:` from the port mapping if the proxy is on another machine.
+to `APP_PORT` (default 3080) and pass `X-Forwarded-Proto`. Remove `127.0.0.1:` from the port mapping if the proxy is on another machine.
 
 Logins come from `USERS` in `.env` the first time the app starts (format `username:Name:password`). If you leave a
 password blank, a random one is printed in the logs. Each of you can change your password in Settings.
