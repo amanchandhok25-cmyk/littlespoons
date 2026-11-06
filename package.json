@@ -1,0 +1,14 @@
+{
+  "name": "weaning-tracker",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Self-hosted family weaning tracker (installable web app)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node --disable-warning=ExperimentalWarning server.js"
+  },
+  "engines": { "node": ">=22.13" },
+  "dependencies": {
+    "web-push": "3.6.7"
+  }
+}

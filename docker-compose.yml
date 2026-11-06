@@ -1,0 +1,38 @@
+services:
+  weaning:
+    build: .
+    container_name: little-spoons
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - TZ=${TZ:-Europe/London}
+    volumes:
+      - spoons_data:/data
+    ports:
+      - "127.0.0.1:3000:3000"   # only reachable via the HTTPS proxy below
+
+  # Option A: Caddy gets a free HTTPS certificate automatically (needs a domain pointing at this server, ports 80/443 open)
+  caddy:
+    image: caddy:2.8
+    restart: unless-stopped
+    profiles: ["caddy"]
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+    environment:
+      - DOMAIN=${DOMAIN}
+    network_mode: host
+
+  # Option B: Cloudflare Tunnel (no open ports, works behind home routers). Needs a Cloudflare account + domain.
+  tunnel:
+    image: cloudflare/cloudflared:2024.10.0
+    restart: unless-stopped
+    profiles: ["tunnel"]
+    command: tunnel --no-autoupdate run
+    environment:
+      - TUNNEL_TOKEN=${TUNNEL_TOKEN}
+    network_mode: host
+
+volumes:
+  spoons_data:
+  caddy_data:
